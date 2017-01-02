@@ -1,12 +1,41 @@
-import { SwaggerObjectEditor } from './components/SwaggerObjectEditor'
+import {SwaggerObjectEditor} from './components/SwaggerObjectEditor'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
+import {Provider, connect} from 'react-redux'
+import { State, store } from './store'
 
-$(function() {
-  $.getJSON('/data/swagger.json', function(response) {
+
+
+// Map Redux state to component props
+function mapStateToProps(state: State) {
+  return {
+    spec: state.spec,
+    search: state.search
+  }
+}
+
+// Map Redux actions to component props
+function mapDispatchToProps(dispatch) {
+  return {
+    onSearch: (searchString: string) => dispatch({ type: 'SEARCH', searchString}),
+    dispatchForPaths: {
+      onAddPath: (path) => dispatch({ type: 'ADD_PATH', path})
+    }
+  }
+}
+
+// Connected Component
+const App = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SwaggerObjectEditor)
+
+
+$(function () {
+  $.getJSON('/data/swagger.json', function (response) {
     console.log(response)
-    const rootInstance = ReactDOM.render(
-      <SwaggerObjectEditor spec={response} />,
+    ReactDOM.render(
+      <Provider store={store}><App/></Provider>,
       document.getElementById('root')
     );
   })

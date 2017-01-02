@@ -2,19 +2,21 @@ import * as React from 'react'
 import {PathsObject} from '../interfaces/openapi'
 import {PathItemObjectEditor} from './PathItemEditor'
 
-interface Props {
-  pathsObject: PathsObject
+export interface Dispatcher {
+  onAddPath: (path: string) => any
 }
 
-export class PathsObjectEditor extends React.Component<Props,string> {
+interface Props {
+  pathsObject: PathsObject,
+  dispatcher: Dispatcher
+}
 
-  constructor(props?: Props) {
-    super(props)
-  }
+export function PathsObjectEditor(props: Props) {
 
-  render() {
-    return <h1>Hello, {Object.keys(this.props.pathsObject).map((key) =>
-      <PathItemObjectEditor key={key} path={key} pathItemObject={this.props.pathsObject[key]}/>
-    )}</h1>;
-  }
+  return <div>
+    {Object.keys(props.pathsObject).map((key) => {
+      return <PathItemObjectEditor key={key} path={key} pathItemObject={props.pathsObject[key]}/>
+    }
+    )}
+  </div>
 }

@@ -1,43 +1,33 @@
 import * as React from 'react'
 import {SwaggerObject} from '../interfaces/openapi'
-import { PathsObjectEditor } from './PathsObjectEditor'
-import { Rating } from 'semantic-ui-react'
+import { SearchObject } from '../store'
+import { PathsObjectEditor, Dispatcher as PathsDispatcher} from './PathsObjectEditor'
+import {Input, Button, Icon} from 'semantic-ui-react'
 
 interface Props {
-  spec: SwaggerObject
-}
-
-interface State {
+  dispatchForPaths?: PathsDispatcher
   spec?: SwaggerObject
-  rating?: number;
+  search?: SearchObject
+  onSearch: (searchString: string) => any
 }
 
-export class SwaggerObjectEditor extends React.Component<Props, State> {
+export function SwaggerObjectEditor(props: Props) {
+  var searchString = props.search && props.search.searchString;
+  return ( <div>
+      <h1>Swagger-Version: {props.spec.swagger}</h1>
+      <div>
+      <Input placeholder='/newPath' value={searchString} onChange={(event,data) => props.onSearch(data.value)}/>
+      <Button onClick={() => props.dispatchForPaths.onAddPath(searchString)}>
+        <Icon name="plus"/> Add path
+      </Button>
+      </div>
+      <div>
+        Searching for '{searchString}'
+      </div>
+      <h2>Paths</h2>
 
-  constructor(props?: Props) {
-    super(props)
-    this.updateRating = this.updateRating.bind(this)
-    this.state = {
-      spec: props.spec,
-      rating: 3
-    }
-  }
-
-  updateRating(event,data?:any) {
-    console.log(data)
-    this.setState({
-      rating: data.rating
-    })
-  }
-
-  render() {
-    return ( <div>
-        <h1>Hello, {this.props.spec.swagger} 3</h1>
-        <h2>Paths</h2>
-        <Rating rating={this.state.rating} maxRating={5} onRate={this.updateRating} />
-        {this.state.rating}
-        <PathsObjectEditor pathsObject={this.props.spec.paths} />
+      <PathsObjectEditor pathsObject={props.spec.paths} dispatcher={props.dispatchForPaths}/>
     </div>
-    );
-  }
+  )
 }
+
