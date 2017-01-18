@@ -23,7 +23,7 @@
     "redux-localstorage": "^1.0.0-rc5",
     "redux-storage": "^4.1.2",
     "redux-storage-engine-localstorage": "^1.1.4",
-    "semantic-ui-react": "^0.63.4",
+    "semantic-ui-react": "^0.64.2",
     "zepto": "^1.2.0"
   },
   "devDependencies": {
@@ -31,7 +31,7 @@
     "@types/chai-as-promised": "0.0.29",
     "@types/jquery": "^2.0.37",
     "@types/mocha": "^2.2.35",
-    "@types/react": "^0.14.55",
+    "@types/react": "^15.0.0",
     "@types/react-dom": "^0.14.19",
     "@types/react-redux": "^4.4.35",
     "@types/redux": "^3.6.0",
