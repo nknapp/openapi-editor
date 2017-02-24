@@ -1,5 +1,5 @@
 <template>
-  <div class="ui inverted vertical menu">
+  <div class="ui inverted fluid vertical menu">
     <div class="ui dropdown icon item">
       <i class="wrench icon"></i>
       File
@@ -46,6 +46,8 @@
 
 <script>
   import pickBy from 'lodash.pickby'
+  import { nonVendor } from '../lib/vendor'
+
   export default {
     name: 'Navigation',
     props: ['spec'],
@@ -59,11 +61,11 @@
     },
     computed: {
       filteredPaths: function () {
+        var result = nonVendor(this.spec.paths)
         if (!this.searchField) {
-          return this.spec.paths
+          return result
         }
-        return pickBy(this.spec.paths, (value, key) => key.indexOf(this.searchField) >= 0)
-
+        return pickBy(result, (value, key) => key.indexOf(this.searchField) >= 0)
       }
     },
     methods: {
