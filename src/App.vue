@@ -1,23 +1,44 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <router-view></router-view>
+    <div id="main" class="ui grid">
+      <div class="ui four wide column">
+        <Navigation v-on:loadUrl="loadUrl" :spec="spec">
+          <div class="ui item">Swagger {{spec.swagger}}</div>
+        </Navigation>
+      </div>
+      <div class="ui eight wide column">
+        <router-view :spec="spec"></router-view>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-export default {
-  name: 'app'
-}
+  /* eslint no-unused-vars: "off" */
+  import Navigation from 'components/Navigation'
+  import InfoObject from 'components/InfoObject'
+  import Paths from 'components/Paths'
+
+  export default {
+    name: 'app',
+    components: { Navigation, InfoObject, Paths },
+    data: function () {
+      return {
+        spec: require('./example.json')
+      }
+    },
+    methods: {
+      loadUrl: function (url) {
+        $.get(url).then((result) => {
+          this.$data.spec = result
+        })
+      }
+    }
+  }
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+  #app > .container {
+    max-width: 700px;
+  }
 </style>
