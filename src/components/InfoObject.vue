@@ -4,7 +4,7 @@
       <div class="sixteen wide column">
         <h2 class="ui header">
           <div class="content">
-            {{info.title}} {{width}}
+            {{info.title}}
             <div class="sub header">version {{info.version}}</div>
           </div>
         </h2>

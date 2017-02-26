@@ -50,14 +50,19 @@
     }
   ],
   "schemes": [
-    "http", "https", "wss", "ws"
+    "http",
+    "https",
+    "wss",
+    "ws"
   ],
   "paths": {
     "x-vendor-extension-paths": {
       "name": "gimme",
       "firstName": "jj"
     },
-    "/petref": { "$ref": "#/pathDef/pet"},
+    "/petref": {
+      "$ref": "#/pathDef/pet"
+    },
     "/pet": {
       "x-vendor-extension-path-item": "test",
       "post": {
@@ -264,16 +269,6 @@
           "application/xml",
           "application/json"
         ],
-        "parameters": [
-          {
-            "name": "petId",
-            "in": "path",
-            "description": "ID of pet to return",
-            "required": true,
-            "type": "integer",
-            "format": "int64"
-          }
-        ],
         "responses": {
           "200": {
             "description": "successful operation",
@@ -309,14 +304,6 @@
           "application/json"
         ],
         "parameters": [
-          {
-            "name": "petId",
-            "in": "path",
-            "description": "ID of pet that needs to be updated",
-            "required": true,
-            "type": "integer",
-            "format": "int64"
-          },
           {
             "name": "name",
             "in": "formData",
@@ -363,14 +350,6 @@
             "in": "header",
             "required": false,
             "type": "string"
-          },
-          {
-            "name": "petId",
-            "in": "path",
-            "description": "Pet id to delete",
-            "required": true,
-            "type": "integer",
-            "format": "int64"
           }
         ],
         "responses": {
@@ -389,7 +368,112 @@
             ]
           }
         ]
-      }
+      },
+      "parameters": [
+        {
+          "name": "petId",
+          "in": "path",
+          "description": "Pet id to delete",
+          "required": true,
+          "type": "integer",
+          "format": "int64",
+          "maximum": 6,
+          "exclusiveMaximum": true,
+          "minimum": 2,
+          "exclusiveMinimum": false
+        },
+        {
+          "name": "multipleOf",
+          "in": "query",
+          "description": "Showcase for multipleOf",
+          "required": true,
+          "type": "integer",
+          "format": "int64",
+          "maximum": 20,
+          "multipleOf": 3
+        },
+        {
+          "name": "kruempel",
+          "in": "query",
+          "description": "Kruempel dipuempel. With a description that is a bit longer **and with markdown**",
+          "required": false,
+          "type": "string",
+          "format": "date-time"
+        },
+        {
+          "name": "water",
+          "in": "query",
+          "description": "Kruempel dipuempel. With a description that is a bit longer **and with markdown**",
+          "required": false,
+          "type": "string",
+          "default": "axxb",
+          "pattern": "a.*b$"
+        },
+        {
+          "name": "multitude",
+          "in": "query",
+          "description": "Some parameter with pattern",
+          "required": false,
+          "type": "array",
+          "collectionFormat": "multi",
+          "items": "string",
+          "default": ["a","b","c"],
+          "format": "date",
+          "maxItems": 5,
+          "minItems": 2,
+          "uniqueItems": true
+        },
+        {
+          "name": "multitude2",
+          "in": "query",
+          "description": "Some parameter with pattern",
+          "required": false,
+          "type": "array",
+          "collectionFormat": "pipes",
+          "items": "string",
+          "format": "date",
+          "minItems": 2
+        },
+        {
+          "name": "multitude3",
+          "in": "query",
+          "description": "Some parameter with pattern",
+          "required": false,
+          "type": "array",
+          "collectionFormat": "tsv",
+          "items": "string",
+          "format": "date",
+          "maxItems": 4
+        },
+        {
+          "name": "enum",
+          "in": "query",
+          "description": "Some parameter with pattern",
+          "required": false,
+          "type": "array",
+          "collectionFormat": "ssv",
+          "items": "string",
+          "format": "date",
+          "maxItems": 5,
+          "minItems": 2,
+          "enum": [
+            "abc",
+            "cde",
+            "efg"
+          ]
+        },
+        {
+          "name": "length",
+          "in": "query",
+          "description": "Some parameter with length constraint",
+          "required": false,
+          "type": "string",
+          "items": "string",
+          "maxLength": 5,
+          "minLength": 2
+        }
+
+      ]
     },
     "/pet/{petId}/uploadImage": {
       "post": {
@@ -965,6 +1049,7 @@
     },
     "Tag": {
       "type": "object",
+      "description": "Some tags",
       "properties": {
         "id": {
           "type": "integer",
@@ -1004,9 +1089,11 @@
           },
           "items": {
             "type": "string"
-          }
+          },
+          "minItems": 2
         },
         "tags": {
+          "description": "A list of tags",
           "type": "array",
           "xml": {
             "name": "tag",

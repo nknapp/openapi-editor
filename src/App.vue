@@ -18,7 +18,8 @@
   import Navigation from 'components/Navigation'
   import InfoObject from 'components/InfoObject'
   import Paths from 'components/Paths'
-  import jref from 'json-ref-lite'
+  import jsref from 'jsref'
+  import merge from 'lodash.merge'
 
 
   export default {
@@ -26,13 +27,23 @@
     components: { Navigation, InfoObject, Paths },
     data: function () {
       return {
-        spec: jref.resolve(require('./example.json'))
+        spec: require('./example.json')
       }
+    },
+    created: function() {
+      this.load(JSON.parse(JSON.stringify(require('./example.json'))))
     },
     methods: {
       loadUrl: function (url) {
         $.get(url).then((result) => {
-          this.$data.spec = jref.resolve(result)
+          this.$data.spec = merge(result, jsref(result, ))
+        })
+      },
+      load: function(spec) {
+        // Resolve $ref-properties, but retain them
+        let originalSpec = JSON.parse(JSON.stringify(spec));
+        jsref(spec, { deep: true}).then((resolvedSpec) => {
+          this.$data.spec = merge(originalSpec, resolvedSpec)
         })
       }
     }
@@ -41,7 +52,7 @@
 
 <style>
   html, body {
-    zoom: 1.1;
+    font-size: 12pt;
   }
   @media handheld and (min-resolution: 120dpi) {
     html, body {
@@ -52,6 +63,7 @@
   @media not handheld and (min-resolution: 120dpi) {
 
     #navigation {
+      font-size: 50px;
       width: 20rem;
       position: absolute;
       top: 0;

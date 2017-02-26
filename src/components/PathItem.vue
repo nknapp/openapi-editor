@@ -1,27 +1,39 @@
 <template>
   <div>
     <h2 class="ui header">{{path}}</h2>
-    <Operation v-for="(operation, method) in operations" :path="path" :method="method" :operation="operation"></Operation>
-    <VendorExtensions :object="spec.paths[path]"></VendorExtensions>
+    <RefInfo :object="pathItem"></RefInfo>
+    <Operation v-for="(operation, method) in operations"
+               :path="path"
+               :method="method"
+               :spec="spec"
+               :operation="operation"></Operation>
+    <div v-if="pathItem.parameters">
+      <h3 class="ui header">Parameters</h3>
+      <Parameters :parameters="pathItem.parameters"></Parameters>
   </div>
 </template>
 
 <script>
   import Operation from './Operation'
+  import RefInfo from './RefInfo'
   import VendorExtensions from './VendorExtensions'
+  import Parameters from './Parameters'
   import pickBy from 'lodash.pickby'
 
   const validMethods = {
-    get: true, post: true, patch:true, put:true, head:true, options:true, delete:true
+    get: true, post: true, patch: true, put: true, head: true, options: true, 'delete': true
   }
 
   export default {
     name: 'PathItem',
-    props: [ 'path', 'spec' ],
-    components: { Operation, VendorExtensions },
+    props: ['path', 'spec'],
+    components: { Operation, VendorExtensions, RefInfo, Parameters },
     computed: {
-      operations: function() {
-        return pickBy(this.spec.paths[this.path], (value, key) => validMethods[key])
+      pathItem: function () {
+        return this.spec.paths[this.path]
+      },
+      operations: function () {
+        return pickBy(this.pathItem, (value, key) => validMethods[key])
       },
     }
   }
