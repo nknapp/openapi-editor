@@ -20,23 +20,22 @@
   import Paths from 'components/Paths'
   import jsref from 'jsref'
   import merge from 'lodash.merge'
+  import { store } from './store/index'
 
 
   export default {
     name: 'app',
+    store,
     components: { Navigation, InfoObject, Paths },
-    data: function () {
-      return {
-        spec: require('./example.json')
+    computed: {
+      spec: function () {
+        return this.$store.state.spec
       }
-    },
-    created: function() {
-      this.load(JSON.parse(JSON.stringify(require('./example.json'))))
     },
     methods: {
       loadUrl: function (url) {
         $.get(url).then((result) => {
-          this.$data.spec = merge(result, jsref(result, ))
+          this.$store.spec = merge(result, jsref(result, ))
         })
       },
       load: function(spec) {

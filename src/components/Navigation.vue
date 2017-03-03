@@ -8,7 +8,7 @@
           <i class="dropdown icon"></i>
           <span class="text">New</span>
         </div>
-        <div @click="loadPetstore" class="item">
+          <div @click="loadPetstore" class="item">
           Open...
         </div>
         <div class="item">
@@ -24,53 +24,63 @@
       </div>
     </div>
     <div class="ui item">
-      <div class="ui icon input">
+      <div class="ui inverted transparent icon input">
         <input class="prompt" type="text" placeholder="Search spec..." v-model="searchField">
         <i class="search link icon"></i>
       </div>
-      <div class="results"></div>
     </div>
     <div class="item">
       <router-link :to="'/'">Overview</router-link>
     </div>
     <div class="item">
       <div class="header">Paths</div>
-      <div class="menu">
-        <a class="item" v-for="(operations,path) in filteredPaths">
-          <router-link :to="'/path/' + encodeURIComponent(path)">{{path}}</router-link>
-        </a>
-      </div>
+      <PathsNavigation ></PathsNavigation>
     </div>
   </div>
 </template>
 
 <script>
   import pickBy from 'lodash.pickby'
-  import { nonVendor } from '../lib/vendor'
+  import {nonVendor} from '../lib/vendor'
+  import router from '../router/index'
+  import Search from './semantic-ui/Search'
+  import PathsNavigation from './PathsNavigation'
 
   export default {
     name: 'Navigation',
     props: ['spec'],
     mounted () {
-      $(this.$el).find('.dropdown').dropdown()
+      $(this.$el).find('.dropdown').dropdown();
     },
+    components: { Search, PathsNavigation },
     data: function () {
       return {
+        pathName: null,
         searchField: null
       }
     },
     computed: {
-      filteredPaths: function () {
-        var result = nonVendor(this.spec.paths)
-        if (!this.searchField) {
-          return result
-        }
-        return pickBy(result, (value, key) => key.indexOf(this.searchField) >= 0)
+      pathList: function () {
+        return Object.keys(this.$store.state.spec.paths)
+          .map(function (path) {
+            return {
+              title: path
+            }
+          })
       }
     },
     methods: {
       loadPetstore: function () {
         this.$emit('loadUrl', 'http://petstore.swagger.io/v2/swagger.json')
+      }
+      ,
+      addPath: function () {
+        this.$store.commit('addPath', this.pathName)
+        router.push('/path/' + encodeURIComponent(this.pathName))
+      }
+      ,
+      deletePath: function (name) {
+        this.$store.commit('deletePath', name)
       }
     }
 
