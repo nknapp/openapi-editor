@@ -3,25 +3,12 @@
     <i class="right floated edit icon" @click="edit"></i>
     <div v-html="html"></div>
   </div>
-
-  <div v-else-if="editing" class="ui raised segments" @click="focusInputField">
-    <div class="ui segment markdown-preview html">
-      <div v-html="editHtml">
-      </div>
-    </div>
-    <div class="ui segment markdown-preview markdown">
-      <div class="ui transparent fluid input">
-        <textarea class="ui fluid input" v-if="rows" :rows="rows" placeholder="Enter markdown here..."
-                  v-model="markdown"
-                  @keyup.ctrl.enter="save"></textarea>
-        <input v-else type="text" placeholder="Enter markdown here..." v-model="markdown" @keyup.ctrl.enter="save">
-      </div>
-    </div>
+  <MarkdownEditor v-else-if="editing" v-model="markdown" :rows="rows">
     <div class="ui segment">
       <div type="submit" class="ui compact primary button" @click="save">Save</div>
       <div type="submit" class="ui compact cancel button" @click="cancel">Cancel</div>
     </div>
-  </div>
+  </MarkdownEditor>
   <div v-else-if="emptyMessage && !md">
     <a @click="edit"><i class="plus icon"></i> {{emptyMessage}}</a>
   </div>
@@ -29,6 +16,7 @@
 
 <script>
   import marked from 'marked'
+  import MarkdownEditor from './MarkdownEditor'
   import Vue from 'vue'
   export default {
     name: 'Marked',
@@ -39,14 +27,11 @@
         editing: false
       }
     },
+    components: { MarkdownEditor },
     computed: {
       html: function () {
         return this.md && marked(this.md)
-      },
-      editHtml: function () {
-        return this.markdown ? marked(this.markdown) : '&nbsp;'
       }
-
     },
     methods: {
       focusInputField: function () {
