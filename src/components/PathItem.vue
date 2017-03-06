@@ -2,14 +2,14 @@
   <div v-if="pathItem">
     <h2 class="ui header">{{path}}</h2>
     <RefInfo :object="pathItem"></RefInfo>
-    <Search :source="missingMethods" showAll="true" placeholder="Add operation (Alt+M)" @choose="addMethod"
+    <Search :source="missingMethods" showAll="true" placeholder="Add operation (Alt+M)" @input="addMethod"
             accessKey="m" v-show="missingMethods.length > 0"></Search>
 
     <Operation v-for="op in operations" :method="op.method" :pointer="op.pointer" :path="path"></Operation>
 
     <div v-if="pathItem.parameters">
-      <h3 class="ui header">Parameters</h3>
-      <Parameters :parameters="pathItem.parameters"></Parameters>
+      <h3 class="ui header">Parameters for all methods</h3>
+      <Parameters :pointer="parametersPath"></Parameters>
     </div>
   </div>
   <div v-else>
@@ -54,8 +54,14 @@
       }
     },
     computed: {
+      pointer: function () {
+        return `#/paths/${encodeURIComponent(this.path)}`
+      },
       pathItem: function () {
         return this.$store.state.spec.paths[this.path]
+      },
+      parametersPath: function() {
+        return `${this.pointer}/parameters`
       },
       /**
        * Return the http_methods that are not yet defined for this pathitem

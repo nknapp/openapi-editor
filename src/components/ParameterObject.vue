@@ -1,74 +1,84 @@
 <template>
-  <tr class="top aligned">
-    <td class="collapsing">
-      {{parameter.name}}
-      <i v-if="parameter.required" class="asterisk icon" title="required"></i>
-    </td>
-    <td>{{parameter.in}}</td>
-    <td class="single line">
-      <div>{{resolvedType}}</div>
-    </td>
-    <td>
-      <Marked :md="parameter.description"></Marked>
-      <span class="parameter default value" v-if="parameter.default">(default value: <code>{{JSON.stringify(parameter.default)}}</code>)</span>
-    </td>
-    <td>
-      <div class="ui list">
-        <a target="_blank" href="https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md#dataTypeFormat" v-if="parameter.format">{{parameter.format}}</a>
-        <div class="item" v-for="c in constraints">
-          {{c}}
-        </div>
+  <div v-if="editing" class="ui fluid card">
+    <div class="content">
+      <slot></slot>
+      <ParameterEditor v-model="model"></ParameterEditor>
+    </div>
+    <div class="ui bottom attached buttons">
+      <button class="ui button" name="cancelButton" @click="cancel">Cancel</button>
+      <div class="or"></div>
+      <button class="ui positive button" name="saveButton" @click="save">Save</button>
+    </div>
+  </div>
+  <div v-else class="ui fluid card">
+    <div class="content">
+      <div class="header" @click="edit">{{model.name}}
+        <slot></slot>
       </div>
-    </td>
-    <td>
-      <div v-if="parameter.collectionFormat">{{multiplicity}}</div>
-      <div v-if="minMaxItems">({{minMaxItems}})</div>
-    </td>
-  </tr>
+      <div class="meta">
+        in {{model.in}}
+      </div>
+      <div class="description">
+        <Marked :md="model.description" :readOnly="true"></Marked>
+      </div>
+      <div class="extra-content">
+        <div v-if="model.required" class="ui basic blue label">
+          <i class="asterisk icon"></i> required
+        </div>
+        <div v-if="model.deprecated" class="ui basic orange label">
+          <i class="warning circle icon"></i> deprecated
+        </div>
+        <div v-if="model.allowEmptyValue" class="ui basic green label">
+          <i class="checkmark box icon"></i> allow empty value
+        </div>
+
+      </div>
+    </div>
+    <button class="ui bottom attached button" name="editButton" @click="edit">
+      <i class="edit icon"></i> Edit
+    </button>
+  </div>
 </template>
 
 <script>
   import RefInfo from './RefInfo'
   import VendorExtensions from './VendorExtensions'
   import Marked from './Marked'
-  import { constraints, minMaxItems } from '../lib/datatypes'
+  import ParameterEditor from './ParameterEditor'
+  import {constraints, minMaxItems, multiplicity} from '../lib/datatypes'
+  import {resolveRef} from '../lib/ref'
+  import Vue from 'vue'
 
   export default {
     name: 'ParameterObject',
-    props: ['parameter', 'spec'],
-    components: { VendorExtensions, RefInfo, Marked },
-    computed: {
-      styleClass: function () {
-        return this.parameter.required ? 'ui red raised card' : 'ui card'
-      },
-      constraints: function () {
-        return constraints(this.parameter)
-      },
-      resolvedType: function () {
-        var p = this.parameter;
-        if (p.type === 'array') {
-          return p.items + '[]'
-        }
-        return p.type
-      },
-      multiplicity: function () {
-        if (!this.parameter.collectionFormat) {
-          return
-        }
-        var name = 'p';
-        switch (this.parameter.collectionFormat) {
-          case 'csv': return `${name}=x1,x2,x3`
-          case 'ssv': return `${name}=x1 x2 x3`
-          case 'tsv': return `${name}=x1\\tx2\\tx3`
-          case 'pipes': return `${name}=x1|x2|x3`
-          case 'multi': return `${name}=x1&${name}=v2`
-          default: return `Unknown collection-format ${this.parameter.collectionFormat}`
-        }
-      },
-      minMaxItems: function () {
-        return minMaxItems(this.parameter)
+    props: ['pointer'],
+    components: { VendorExtensions, RefInfo, Marked, ParameterEditor },
+    data: function () {
+      return {
+        model: resolveRef(this.$store.state.spec, this.pointer) || {
+
+        },
+        editing: false
       }
-    }
+    },
+    methods: {
+      edit: function () {
+        this.$data.editing = true;
+        return true
+      },
+      save: function () {
+        this.$data.editing = false;
+        console.log('save')
+        this.$store.commit('saveParameter', { pointer: this.pointer, value: this.$data.model })
+        return true
+      },
+      cancel: function () {
+        this.$data.editing = false;
+        return true
+      }
+
+    },
+    computed: {}
   }
 </script>
 
@@ -77,8 +87,9 @@
   .parameter.default.value {
     font-style: italic;
   }
+
   .parameter.default.value > code {
-    font-family:     "Courier New", Courier, monospace;
+    font-family: "Courier New", Courier, monospace;
     font-style: normal;
     background-color: #eee;
 

@@ -1,10 +1,14 @@
 import VueX from 'vuex'
 import Vue from 'vue'
-// Make sure to call Vue.use(Vuex) first if using a module system
+import createPersistedState from 'vuex-persistedstate'
+import { resolveRef, storeRef } from '../lib/ref'
 
+// Make sure to call Vue.use(Vuex) first if using a module system
 Vue.use(VueX)
 
+
 export const store = new VueX.Store({
+  plugins: [createPersistedState()],
   state: {
     spec: require('../minimal.json')
   },
@@ -18,7 +22,8 @@ export const store = new VueX.Store({
         // Create parameter template
         .map((name) => ({
           name: name,
-          in: 'path'
+          in: 'path',
+          required: true
         }));
 
       Vue.set(state.spec.paths, name, {
@@ -40,6 +45,20 @@ export const store = new VueX.Store({
     },
     saveOperationField(state, { path, method, field, value }) {
       Vue.set(state.spec.paths[path][method], field, value)
+    },
+    saveParameter(state, { pointer, value }) {
+      storeRef(state.spec, pointer, value )
+    },
+    /**
+     * @param state
+     * @param pointer pointer to the "parameters"-property
+     * @param value
+     */
+    addParameter(state, { pointer }) {
+      resolveRef(state.spec, pointer).push({})
+    },
+    removeParameter(state, { pointer, index }) {
+      Vue.delete(resolveRef(state.spec, pointer), value )
     }
 
   }

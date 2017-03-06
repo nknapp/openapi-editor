@@ -11,3 +11,7 @@ export function resolveRef(obj, $ref) {
   return ptr.get(obj, $ref)
 }
 
+export function storeRef(obj, $ref, value) {
+  console.log("arguments", arguments)
+  ptr.set(obj, $ref, value)
+}

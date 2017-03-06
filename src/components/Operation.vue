@@ -22,7 +22,7 @@
         <a v-if="bodyParam" class="item" data-tab="second">Request-Body</a>
         <a class="item" data-tab="third">Response-Codes</a>
       </div>
-      <div v-if="nonBodyParams.length" class="ui bottom attached tab segment" data-tab="first">
+<!--      <div v-if="nonBodyParams.length" class="ui bottom attached tab segment" data-tab="first">
         <Parameters :parameters="nonBodyParams"></Parameters>
       </div>
       <div v-if="bodyParam" class="ui bottom attached tab segment" data-tab="second">
@@ -30,7 +30,7 @@
       </div>
       <div class="ui bottom attached tab segment" data-tab="third">
         Third
-      </div>
+      </div> -->
     </div>
   </div>
 </template>

@@ -10,6 +10,7 @@
       <div v-show="showMenu" class="results">
         <div v-for="result in filteredResult" class="result" @click="choose(result)" >
           <div class="title">{{result.title}}</div>
+          <div v-if="result.description" class="description">{{result.description}}</div>
         </div>
         <div v-if="filteredResult.length === 0" class="message empty">
           <div class="header">No Results</div>
@@ -23,10 +24,10 @@
 <script>
   export default {
     name: 'Search',
-    props: ['source', 'placeholder', 'showAll', 'accessKey'],
+    props: ['source', 'value', 'placeholder', 'showAll', 'accessKey'],
     data: function () {
       return {
-        searchString: null,
+        searchString: this.value && this.value.title,
         focused: null
       }
     },
@@ -40,7 +41,7 @@
         return true;
       },
       choose: function (result) {
-        this.$emit('choose',result)
+        this.$emit('input',result)
         this.searchString = null
         this.blur()
       }

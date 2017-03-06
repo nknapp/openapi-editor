@@ -94,7 +94,6 @@
         if (this.$route.path === route) {
           router.push('/')
         }
-        console.log(route,this.$route)
       }
     }
   }

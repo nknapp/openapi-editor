@@ -1,6 +1,6 @@
 <template>
   <div v-if="md && !editing">
-    <i class="right floated edit icon" @click="edit"></i>
+    <i v-if="!readOnly" class="right floated edit icon" @click="edit"></i>
     <div v-html="html"></div>
   </div>
   <MarkdownEditor v-else-if="editing" v-model="markdown" :rows="rows">
@@ -20,7 +20,7 @@
   import Vue from 'vue'
   export default {
     name: 'Marked',
-    props: ['md', 'emptyMessage', 'rows'],
+    props: ['md', 'emptyMessage', 'rows', 'readOnly'],
     data: function () {
       return {
         markdown: this.md,

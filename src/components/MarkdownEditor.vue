@@ -7,7 +7,7 @@
     <div class="ui segment markdown-preview markdown">
       <div class="ui transparent fluid input">
         <textarea class="ui fluid input" v-if="rows" :rows="rows" placeholder="Enter markdown here..."
-                  v-model="md"
+                  :value="markdown" @input="update"
                   @keyup.ctrl.enter="save"></textarea>
         <input v-else type="text" placeholder="Enter markdown here..." :value="markdown" @input="update">
       </div>
@@ -36,7 +36,7 @@
     props: ['value', 'rows'],
     data: function () {
       return {
-        markdown: this.md,
+        markdown: this.value,
       }
     },
     computed: {
